@@ -78,7 +78,7 @@ DATABASE_ROUTERS = (
 )
 
 TENANT_MODEL = "customers.Client"
-PUBLIC_SCHEMA_URLCONF = 'typcore.urls'
+
 TENANT_DOMAIN_MODEL = "customers.Domain"
 
 # PADRÕES
@@ -89,17 +89,28 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# No final do settings.py
-import sys
-from django.db import connection
 
-# Verifica se estamos no Railway e tenta criar o tenant public automaticamente
-if 'runserver' not in sys.argv and 'gunicorn' in sys.argv[0]:
+# No final do seu settings.py
+import sys
+
+# 1. Garante que o Admin abra mesmo sem tenant configurado
+PUBLIC_SCHEMA_URLCONF = 'typcore.urls'
+
+# 2. Script para criar o tenant 'public' automaticamente no banco do Railway
+if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
     try:
-        from customers.models import Client, Domain
+        from django.db import connection
+        # Substitua 'customers' pelo nome da sua app de clientes se for diferente
+        from customers.models import Client, Domain 
+        
+        # Verifica se o tenant public já existe
         if not Client.objects.filter(schema_name='public').exists():
             tenant = Client.objects.create(schema_name='public', name='Public Tenant')
-            Domain.objects.create(domain='web-production-80309.up.railway.app', tenant=tenant, is_primary=True)
-            print("Tenant 'public' criado com sucesso!")
+            Domain.objects.create(
+                domain='web-production-80309.up.railway.app', 
+                tenant=tenant, 
+                is_primary=True
+            )
+            print("SUCESSO: Tenant 'public' criado automaticamente!")
     except Exception as e:
-        print(f"Erro ao criar tenant automático: {e}")
+        print(f"Aguardando banco de dados... {e}")
