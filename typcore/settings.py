@@ -33,25 +33,24 @@ TENANT_APPS = [
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
 # 2. MIDDLEWARE (A ordem aqui é vital)
-MMIDDLEWARE = [
-    # O tenant fica comentado por enquanto
+MIDDLEWARE = [
+    # O porteiro (Tenant) continua desativado por enquanto para podermos entrar
     # 'django_tenants.middleware.main.TenantMainMiddleware', 
     
     'django.middleware.security.SecurityMiddleware',
     
-    # ESTA É A LINHA QUE O ERRO PEDIU (Deve vir antes de AuthenticationMiddleware)
+    # ESTA É A LINHA QUE O ERRO ESTÁ PEDINDO:
     'django.contrib.sessions.middleware.SessionMiddleware', 
     
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     
-    # ESTA DEVE VIR DEPOIS DE SESSIONS
+    # ESTA PRECISA VIR DEPOIS DO SESSIONS:
     'django.contrib.auth.middleware.AuthenticationMiddleware', 
     
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 ROOT_URLCONF = 'typcore.urls'
 
 TEMPLATES = [
