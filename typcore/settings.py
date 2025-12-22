@@ -34,7 +34,7 @@ INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in S
 
 # 2. MIDDLEWARE (A ordem aqui é vital)
 MIDDLEWARE = [
-    # 'django_tenants.middleware.main.TenantMainMiddleware', # ATIVADO
+    'django_tenants.middleware.main.TenantMainMiddleware', # ATIVADO
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -93,7 +93,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = ['https://web-production-80309.up.railway.app']
     
-
+# Permite que o Django reconheça o domínio mesmo se houver subdomínios extras
+TENANT_ALLOW_MAIN_DOMAIN_USER_REGISTRATION = True
 
 # No final do seu settings.py
 # No final do seu settings.py
