@@ -1,16 +1,19 @@
 import os
+import sys
 from pathlib import Path
 import dj_database_url
-from dotenv import load_dotenv # Adicione esta linha
-import sys
+from dotenv import load_dotenv
+
 
 load_dotenv() # E esta também
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-# ADICIONE ESTA LINHA:
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
-DEBUG = False
+ECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
+DEBUG = os.getenv('DEBUG', 'False') == 'True' # Recomendo ler do Railway
 # O ponto antes de .typcore.com.br é o segredo para aceitar todos os subdomínios
 ALLOWED_HOSTS = [
     '.typcore.com.br', 
@@ -111,8 +114,12 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CSRF_TRUSTED_ORIGINS = ['https://web-production-80309.up.railway.app']
-    
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-80309.up.railway.app',
+    'https://erp.typcore.com.br',
+    'https://typcore.com.br'
+]   
+ 
 # Permite que o Django reconheça o domínio mesmo se houver subdomínios extras
 TENANT_ALLOW_MAIN_DOMAIN_USER_REGISTRATION = True
 
@@ -142,12 +149,7 @@ if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
         # Isso vai mostrar o erro real nos Logs do Railway se falhar
         print(f"ERRO NO SCRIPT DE TENANT: {e}")
 
-        import os
-
-# Caminho onde o Django buscará arquivos estáticos adicionais
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+    
 
 # Pasta onde o Django vai reunir todos os estáticos para o Railway usar
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
