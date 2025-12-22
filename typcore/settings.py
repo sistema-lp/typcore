@@ -11,26 +11,28 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
 DEBUG = False
 ALLOWED_HOSTS = ['*']
 
-# 1. APPS DO SISTEMA
 SHARED_APPS = [
-    'jazzmin',           # Sistema de design (Administrativo)
-    'django_tenants',    # Motor do sistema
-    'apps.customers',    # Onde ficam os registros de clientes
+    'jazzmin',           # 1º lugar obrigatoriamente
+    'django_tenants',    # 2º lugar
+    'apps.customers',    # Sua app de clientes
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-TENANT_APPS = [
-    'django.contrib.auth',      # Permite login nos ramos
-    'django.contrib.contenttypes',
-    
-    'apps.products',            # O seu RAMO isolado
+    'django.contrib.staticfiles', # Necessário para o visual carregar
 ]
 
+TENANT_APPS = [
+    'django.contrib.auth',      
+    'django.contrib.contenttypes',
+    'apps.products',            # Sua app de produtos isolada
+]
+
+
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
+
 
 # 2. MIDDLEWARE (A ordem aqui é vital)
 MIDDLEWARE = [
@@ -121,3 +123,17 @@ if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
     except Exception as e:
         # Isso vai mostrar o erro real nos Logs do Railway se falhar
         print(f"ERRO NO SCRIPT DE TENANT: {e}")
+
+        JAZZMIN_SETTINGS = {
+    "site_title": "TypCore ERP",
+    "site_header": "TypCore",
+    "site_brand": "TypCore Admin",
+    "welcome_sign": "Bem-vindo ao TypCore ERP",
+    "copyright": "TypCore Ltd",
+    "search_model": ["apps_customers.Client"],
+    "topmenu_links": [
+        {"name": "Início", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+}
