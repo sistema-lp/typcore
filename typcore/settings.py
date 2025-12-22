@@ -78,6 +78,7 @@ DATABASE_ROUTERS = (
 )
 
 TENANT_MODEL = "customers.Client"
+PUBLIC_SCHEMA_URLCONF = 'typcore.urls'
 TENANT_DOMAIN_MODEL = "customers.Domain"
 
 # PADRÕES
