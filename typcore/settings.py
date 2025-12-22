@@ -124,16 +124,34 @@ if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
         # Isso vai mostrar o erro real nos Logs do Railway se falhar
         print(f"ERRO NO SCRIPT DE TENANT: {e}")
 
-        JAZZMIN_SETTINGS = {
-    "site_title": "TypCore ERP",
-    "site_header": "TypCore",
-    "site_brand": "TypCore Admin",
-    "welcome_sign": "Bem-vindo ao TypCore ERP",
-    "copyright": "TypCore Ltd",
-    "search_model": ["apps_customers.Client"],
-    "topmenu_links": [
-        {"name": "Início", "url": "admin:index", "permissions": ["auth.view_user"]},
-    ],
-    "show_sidebar": True,
-    "navigation_expanded": True,
+        JAZZMIN_UI_CONFIG = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary", # Cor da marca
+    "accent": "accent-primary",
+    "navbar": "navbar-dark", # Barra superior escura
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary", # Menu lateral escuro
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly", # Tema moderno e limpo
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }
