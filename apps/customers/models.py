@@ -3,9 +3,10 @@ from django_tenants.models import TenantMixin, DomainMixin
 
 class Client(TenantMixin):
     name = models.CharField(max_length=100)
-    ramo = models.CharField(max_length=50) # Onde salvaremos um dos 20 ramos
     created_on = models.DateField(auto_now_add=True)
-    auto_create_schema = True
+
+    # O campo auto_drop_schema garante que ao deletar um cliente, o esquema suma
+    auto_drop_schema = True 
 
 class Domain(DomainMixin):
     pass

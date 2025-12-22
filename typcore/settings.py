@@ -35,13 +35,14 @@ INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in S
 # 2. MIDDLEWARE (A ordem aqui é vital)
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+   
 ]
 
 ROOT_URLCONF = 'typcore.urls'
@@ -91,19 +92,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # No final do seu settings.py
+# No final do seu settings.py
 import sys
 
 # 1. Garante que o Admin abra mesmo sem tenant configurado
 PUBLIC_SCHEMA_URLCONF = 'typcore.urls'
 
-# 2. Script para criar o tenant 'public' automaticamente no banco do Railway
+# 2. Script corrigido
 if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
     try:
         from django.db import connection
-        # Substitua 'customers' pelo nome da sua app de clientes se for diferente
-        from customers.models import Client, Domain 
+        # ALTERADO: Importando do caminho correto conforme seu SHARED_APPS
+        from apps.customers.models import Client, Domain 
         
-        # Verifica se o tenant public já existe
         if not Client.objects.filter(schema_name='public').exists():
             tenant = Client.objects.create(schema_name='public', name='Public Tenant')
             Domain.objects.create(
@@ -113,4 +114,5 @@ if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
             )
             print("SUCESSO: Tenant 'public' criado automaticamente!")
     except Exception as e:
-        print(f"Aguardando banco de dados... {e}")
+        # Isso vai mostrar o erro real nos Logs do Railway se falhar
+        print(f"ERRO NO SCRIPT DE TENANT: {e}")
