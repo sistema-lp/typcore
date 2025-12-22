@@ -7,7 +7,7 @@ load_dotenv() # E esta também
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 # 1. APPS DO SISTEMA
