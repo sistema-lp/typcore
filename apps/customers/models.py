@@ -10,3 +10,11 @@ class Client(TenantMixin):
 
 class Domain(DomainMixin):
     pass
+
+# Adicione isso no topo ou junto com os modelos de Clientes
+class BusinessSector(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
