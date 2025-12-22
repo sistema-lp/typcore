@@ -83,7 +83,8 @@ DATABASES['default']['ENGINE'] = 'django_tenants.postgresql_backend'
 DATABASE_ROUTERS = (
     'django_tenants.routers.TenantSyncRouter',
 )
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 TENANT_MODEL = "customers.Client"
 
 TENANT_DOMAIN_MODEL = "customers.Domain"
@@ -97,6 +98,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-80309.up.railway.app',
+
+    
 
 
 # No final do seu settings.py
