@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Comando para rodar as migrações e iniciar o servidor
-CMD python manage.py migrate_schemas && gunicorn typcore.wsgi:application --bind 0.0.0.0:$PORT
+CMD ["sh", "-c", "python manage.py migrate_schemas --shared && gunicorn typcore.wsgi:application --bind 0.0.0.0:$PORT"]
