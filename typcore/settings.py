@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv # Adicione esta linha
+import sys
 
 load_dotenv() # E esta também
 
@@ -12,27 +13,21 @@ ALLOWED_HOSTS = ['*']
 
 # 1. APPS DO SISTEMA
 SHARED_APPS = [
-    'django_tenants',
-    'apps.customers', 
+    'jazzmin',           # Sistema de design (Administrativo)
+    'django_tenants',    # Motor do sistema
+    'apps.customers',    # Onde ficam os registros de clientes
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
 
 TENANT_APPS = [
-    'jazzmin',
-    'django_tenants',
-    'apps.customers',
-    'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.auth',      # Permite login nos ramos
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'apps.products',
-    # Aqui entrarão os módulos dos 20 ramos futuramente
+    
+    'apps.products',            # O seu RAMO isolado
 ]
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
