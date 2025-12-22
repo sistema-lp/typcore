@@ -7,30 +7,51 @@ import sys
 load_dotenv() # E esta também
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+# ADICIONE ESTA LINHA:
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
 DEBUG = False
-ALLOWED_HOSTS = ['*']
+# O ponto antes de .typcore.com.br é o segredo para aceitar todos os subdomínios
+ALLOWED_HOSTS = [
+    '.typcore.com.br', 
+    'typcore.com.br', 
+    'localhost', 
+    '127.0.0.1',
+    '.railway.app', # Caso você ainda use o domínio do Railway para testes
+]
+TENANT_MODEL = "customers.Client"   # Se a sua pasta for 'apps/customers', use "apps_customers.Client"
+DOMAIN_MODEL = "customers.Domain"   # Ajuste conforme o nome da app no INSTALLED_APPS
 
 SHARED_APPS = [
-    'jazzmin',           # 1º lugar obrigatoriamente
-    'django_tenants',    # 2º lugar
-    'apps.customers',    # Sua app de clientes
-    
+    'jazzmin',
+    'django_tenants',
+    'apps.customers',    # <-- Use o caminho da pasta direto
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles', # Necessário para o visual carregar
+    'django.contrib.staticfiles',
 ]
 
 TENANT_APPS = [
-    'django.contrib.auth',      
+    'django.contrib.auth',
     'django.contrib.contenttypes',
-    'apps.products',            # Sua app de produtos isolada
+    'apps.products',     # <-- Use o caminho da pasta direto
 ]
 
+# AQUI ESTÁ O SEGREDO: Use o caminho COMPLETO para o modelo
+TENANT_MODEL = 'apps_customers.Client' 
+DOMAIN_MODEL = 'apps_customers.Domain'
 
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
+
+# O MODELO DEVE USAR O LABEL:
+TENANT_MODEL = 'customers.Client' 
+DOMAIN_MODEL = 'customers.Domain'
+# Mantenha exatamente assim:
+TENANT_MODEL = 'customers.Client' 
+DOMAIN_MODEL = 'customers.Domain'
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
 
@@ -82,9 +103,6 @@ DATABASE_ROUTERS = (
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-TENANT_MODEL = "customers.Client"
-
-TENANT_DOMAIN_MODEL = "customers.Domain"
 
 # PADRÕES
 LANGUAGE_CODE = 'pt-br'
@@ -124,27 +142,62 @@ if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
         # Isso vai mostrar o erro real nos Logs do Railway se falhar
         print(f"ERRO NO SCRIPT DE TENANT: {e}")
 
-        JAZZMIN_UI_CONFIG = {
+        import os
+
+# Caminho onde o Django buscará arquivos estáticos adicionais
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Pasta onde o Django vai reunir todos os estáticos para o Railway usar
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+JAZZMIN_SETTINGS = {
+    "site_title": "TypCore ERP",
+    "site_header": "TypCore",
+    "site_brand": "TypCore Admin",
+    "site_logo": "img/logo_typcore.png", 
+    "login_logo": None,
+    "welcome_sign": "Bem-vindo ao TypCore ERP",
+    "copyright": "TypCore Ltda",
+    "search_model": ["customers.Client"],
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Início", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "customers.Client": "fas fa-building",
+        "customers.Domain": "fas fa-link",
+        "customers.BusinessSector": "fas fa-briefcase",
+        "products.Product": "fas fa-box-open",
+    },
+}
+
+JAZZMIN_UI_CONFIG = {
     "navbar_small_text": False,
     "footer_small_text": False,
     "body_small_text": False,
     "brand_small_text": False,
-    "brand_colour": "navbar-primary", # Cor da marca
+    "brand_colour": "navbar-primary",
     "accent": "accent-primary",
-    "navbar": "navbar-dark", # Barra superior escura
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
     "navbar_fixed": True,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-primary", # Menu lateral escuro
+    "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": True,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "flatly", # Tema moderno e limpo
+    "theme": "flatly",
     "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",
@@ -153,5 +206,22 @@ if 'gunicorn' in sys.argv[0] or 'runserver' in sys.argv:
         "warning": "btn-warning",
         "danger": "btn-danger",
         "success": "btn-success"
-    }
+    },
 }
+        
+# Configurações de Segurança para Produção
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000 # 1 ano de HSTS
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    
+   # Permite que o cookie de sessão funcione em todos os subdomínios
+SESSION_COOKIE_DOMAIN = '.typcore.com.br'
+
+# Se você estiver usando HTTPS (o Railway fornece por padrão), adicione:
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
