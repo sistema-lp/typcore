@@ -34,7 +34,7 @@ INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in S
 
 # 2. MIDDLEWARE (A ordem aqui é vital)
 MIDDLEWARE = [
-    'django_tenants.middleware.main.TenantMainMiddleware', # ATIVADO
+    # 'django_tenants.middleware.main.TenantMainMiddleware', # ATIVADO
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
