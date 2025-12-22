@@ -33,16 +33,23 @@ TENANT_APPS = [
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
 # 2. MIDDLEWARE (A ordem aqui é vital)
-MIDDLEWARE = [
-    'django_tenants.middleware.main.TenantMainMiddleware',
-    # 'django.middleware.security.SecurityMiddleware',
-    # 'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'django.middleware.common.CommonMiddleware',
+MMIDDLEWARE = [
+    # O tenant fica comentado por enquanto
+    # 'django_tenants.middleware.main.TenantMainMiddleware', 
+    
+    'django.middleware.security.SecurityMiddleware',
+    
+    # ESTA É A LINHA QUE O ERRO PEDIU (Deve vir antes de AuthenticationMiddleware)
+    'django.contrib.sessions.middleware.SessionMiddleware', 
+    
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    
+    # ESTA DEVE VIR DEPOIS DE SESSIONS
+    'django.contrib.auth.middleware.AuthenticationMiddleware', 
+    
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-   
 ]
 
 ROOT_URLCONF = 'typcore.urls'
