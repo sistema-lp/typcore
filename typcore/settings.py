@@ -88,3 +88,18 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# No final do settings.py
+import sys
+from django.db import connection
+
+# Verifica se estamos no Railway e tenta criar o tenant public automaticamente
+if 'runserver' not in sys.argv and 'gunicorn' in sys.argv[0]:
+    try:
+        from customers.models import Client, Domain
+        if not Client.objects.filter(schema_name='public').exists():
+            tenant = Client.objects.create(schema_name='public', name='Public Tenant')
+            Domain.objects.create(domain='web-production-80309.up.railway.app', tenant=tenant, is_primary=True)
+            print("Tenant 'public' criado com sucesso!")
+    except Exception as e:
+        print(f"Erro ao criar tenant automático: {e}")
