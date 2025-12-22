@@ -27,6 +27,7 @@ TENANT_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'apps.products',
     # Aqui entrarão os módulos dos 20 ramos futuramente
 ]
 
