@@ -23,6 +23,10 @@ SHARED_APPS = [
 ]
 
 TENANT_APPS = [
+    'jazzmin',
+    'django_tenants',
+    'apps.customers',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
