@@ -8,7 +8,7 @@ load_dotenv() # E esta também
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.localhost']
+ALLOWED_HOSTS = ['*']
 
 # 1. APPS DO SISTEMA
 SHARED_APPS = [
