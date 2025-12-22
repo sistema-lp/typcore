@@ -38,6 +38,7 @@ MIDDLEWARE = [
     # 'django_tenants.middleware.main.TenantMainMiddleware', 
     
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     
     # ESTA É A LINHA QUE O ERRO ESTÁ PEDINDO:
     'django.contrib.sessions.middleware.SessionMiddleware', 
