@@ -12,9 +12,7 @@ class BusinessSector(models.Model):
 # 2. Modelo de Cliente (Apenas UMA vez)
 class Client(TenantMixin):
     name = models.CharField(max_length=100)
-    # Conecta ao ramo de atividade
-    business_sector = models.ForeignKey(BusinessSector, on_delete=models.SET_NULL, null=True, blank=True)       
-    # Dados de contato
+    business_sector = models.ForeignKey(BusinessSector, on_delete=models.SET_NULL, null=True, blank=True)
     email = models.EmailField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     document = models.CharField(max_length=20, blank=True, verbose_name="CPF/CNPJ")
@@ -26,6 +24,10 @@ class Client(TenantMixin):
 
     def __str__(self):
         return self.name
+
+    # O "class Meta" tem que estar alinhado com o "def __str__"
+    class Meta:
+        db_table = 'customers_client'
  
 
 # 3. Modelo de Domínio (Apenas UMA vez)
