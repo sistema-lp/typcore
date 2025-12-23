@@ -52,6 +52,7 @@ SESSION_COOKIE_DOMAIN = None
 CSRF_TRUSTED_ORIGINS = [
     'https://erp.typcore.com.br',
     'https://typcore.com.br',
+    'https://*.railway.app'
 ]
 
 # 2. Configurações de Cookie para Multi-tenant (O Pulo do Gato)
@@ -136,4 +137,5 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # REMOVEMOS a linha que forçava o domínio do cookie para evitar bloqueio de login
+    # Deixe a linha abaixo como None ou com o seu domínio exato
+    SESSION_COOKIE_DOMAIN = None
