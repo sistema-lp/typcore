@@ -111,6 +111,10 @@ CSRF_TRUSTED_ORIGINS = [
     'https://typcore.com.br'
 ]
 TENANT_ALLOW_MAIN_DOMAIN_USER_REGISTRATION = True
+TENANT_USERS_DOMAIN_ALLOW_ALL = True
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
