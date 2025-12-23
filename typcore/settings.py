@@ -45,9 +45,8 @@ TENANT_APPS = [
 ]
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
-TENANT_MODEL = "apps.customers.Client"
-TENANT_DOMAIN_MODEL = "apps.customers.Domain"
-
+TENANT_MODEL = "customers.Client"
+TENANT_DOMAIN_MODEL = "customers.Domain"
 # 5. MIDDLEWARE
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
@@ -154,3 +153,24 @@ def create_public_tenant(sender, **kwargs):
 
 # Conecta o script ao sinal de pós-migração
 post_migrate.connect(create_public_tenant)
+
+from django.db import connection
+
+def fix_database_manually():
+    try:
+        with connection.cursor() as cursor:
+            # Força a criação da coluna sector_id diretamente no banco se ela não existir
+            cursor.execute("""
+                DO $$ 
+                BEGIN 
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                                   WHERE table_name='customers_client' AND column_name='sector_id') THEN
+                        ALTER TABLE customers_client ADD COLUMN sector_id integer;
+                    END IF;
+                END $$;
+            """)
+    except Exception:
+        pass
+
+# Executa a correção antes do site terminar de subir
+fix_database_manually()
