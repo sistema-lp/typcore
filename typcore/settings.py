@@ -4,16 +4,12 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
-# 1. DEFINIÇÃO DA BASE (DEVE SER A PRIMEIRA COISA)
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# 2. CARREGAMENTO DE AMBIENTE
 load_dotenv()
 
 # Garante que o Django encontre a pasta 'apps'
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
-# 3. CONFIGURAÇÕES BÁSICAS
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
@@ -25,7 +21,7 @@ ALLOWED_HOSTS = [
     '.railway.app', 
 ]
 
-# 4. DEFINIÇÃO DE APPS (DJANGO-TENANTS)
+# 4. DEFINIÇÃO DE APPS (Django-Tenants exige ordem específica)
 SHARED_APPS = [
     'jazzmin',
     'django_tenants',
@@ -45,13 +41,15 @@ TENANT_APPS = [
 ]
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
+
 TENANT_MODEL = "customers.Client"
 TENANT_DOMAIN_MODEL = "customers.Domain"
-SESSION_COOKIE_DOMAIN = None
-CSRF_TRUSTED_ORIGINS = ['https://erp.typcore.com.br']
-# 5. MIDDLEWARE
 
-SESSION_COOKIE_DOMAIN = None
+# --- AJUSTE DE COOKIES (CRUCIAL PARA O LOGIN) ---
+# Deixamos como None para que o navegador aceite o cookie no domínio exato que você está usando
+SESSION_COOKIE_DOMAIN = None 
+CSRF_USE_SESSIONS = True
+
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -101,21 +99,22 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# 8. PADRÕES INTERNACIONAIS
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 9. SEGURANÇA E DOMÍNIOS
+# 9. SEGURANÇA (Ajustado para Railway)
 CSRF_TRUSTED_ORIGINS = [
     'https://*.up.railway.app',
     'https://erp.typcore.com.br',
     'https://typcore.com.br'
 ]
-TENANT_ALLOW_MAIN_DOMAIN_USER_REGISTRATION = True
-TENANT_USERS_DOMAIN_ALLOW_ALL = True
+
+# Permite que usuários do schema public loguem em domínios de tenants
+TENANT_USERS_DOMAIN_ALLOW_ALL = True 
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -125,60 +124,4 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_DOMAIN = '.typcore.com.br'
-
-# 10. CONFIGURAÇÃO JAZZMIN
-JAZZMIN_SETTINGS = {
-    "site_title": "TypCore ERP",
-    "site_header": "TypCore",
-    "site_brand": "TypCore Admin",
-    "welcome_sign": "Bem-vindo ao TypCore ERP",
-    "copyright": "TypCore Ltda",
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "customers.Client": "fas fa-building",
-        "products.Product": "fas fa-box-open",
-    },
-}
-
-# 11. SCRIPT DE INICIALIZAÇÃO AUTOMÁTICA (Corrigido para evitar erro de loading)
-import django
-from django.db.models.signals import post_migrate
-
-def create_public_tenant(sender, **kwargs):
-    from apps.customers.models import Client, Domain
-    try:
-        if not Client.objects.filter(schema_name='public').exists():
-            tenant = Client.objects.create(schema_name='public', name='Public Tenant')
-            Domain.objects.create(
-                domain='erp.typcore.com.br', 
-                tenant=tenant, 
-                is_primary=True
-            )
-            print("SUCESSO: Tenant 'public' criado!")
-    except Exception as e:
-        pass
-
-# Conecta o script ao sinal de pós-migração
-post_migrate.connect(create_public_tenant)
-
-from django.db import connection
-
-
-def fix_database_manually():
-    try:
-        with connection.cursor() as cursor:
-            # Força a criação da nova coluna business_sector_id
-            cursor.execute("""
-                DO $$ 
-                BEGIN 
-                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
-                                   WHERE table_name='customers_client' AND column_name='business_sector_id') THEN
-                        ALTER TABLE customers_client ADD COLUMN business_sector_id integer;
-                    END IF;
-                END $$;
-            """)
-    except Exception:
-        pass
-
-fix_database_manually()
+    # REMOVEMOS a linha que forçava o domínio do cookie para evitar bloqueio de login
