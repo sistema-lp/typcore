@@ -47,7 +47,11 @@ TENANT_APPS = [
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 TENANT_MODEL = "customers.Client"
 TENANT_DOMAIN_MODEL = "customers.Domain"
+SESSION_COOKIE_DOMAIN = None
+CSRF_TRUSTED_ORIGINS = ['https://erp.typcore.com.br']
 # 5. MIDDLEWARE
+
+SESSION_COOKIE_DOMAIN = None
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
