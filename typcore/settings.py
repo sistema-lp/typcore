@@ -156,21 +156,21 @@ post_migrate.connect(create_public_tenant)
 
 from django.db import connection
 
+
 def fix_database_manually():
     try:
         with connection.cursor() as cursor:
-            # Força a criação da coluna sector_id diretamente no banco se ela não existir
+            # Força a criação da nova coluna business_sector_id
             cursor.execute("""
                 DO $$ 
                 BEGIN 
                     IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
-                                   WHERE table_name='customers_client' AND column_name='sector_id') THEN
-                        ALTER TABLE customers_client ADD COLUMN sector_id integer;
+                                   WHERE table_name='customers_client' AND column_name='business_sector_id') THEN
+                        ALTER TABLE customers_client ADD COLUMN business_sector_id integer;
                     END IF;
                 END $$;
             """)
     except Exception:
         pass
 
-# Executa a correção antes do site terminar de subir
 fix_database_manually()
