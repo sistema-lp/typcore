@@ -27,6 +27,7 @@ class Client(TenantMixin):
 
     def __str__(self):
         return self.name
+ 
 
 # 3. Modelo de Domínio (Apenas UMA vez)
 class Domain(DomainMixin):
