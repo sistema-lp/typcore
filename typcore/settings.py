@@ -48,8 +48,20 @@ TENANT_DOMAIN_MODEL = "customers.Domain"
 # --- AJUSTE DE COOKIES (CRUCIAL PARA O LOGIN) ---
 # Deixamos como None para que o navegador aceite o cookie no domínio exato que você está usando
 SESSION_COOKIE_DOMAIN = None 
-CSRF_USE_SESSIONS = True
+# 1. Força o Django a aceitar o login vindo deste endereço
+CSRF_TRUSTED_ORIGINS = [
+    'https://erp.typcore.com.br',
+    'https://typcore.com.br',
+]
 
+# 2. Configurações de Cookie para Multi-tenant (O Pulo do Gato)
+SESSION_COOKIE_DOMAIN = None  # Mantenha como None para não travar em um único domínio
+CSRF_COOKIE_DOMAIN = None
+SESSION_SAVE_EVERY_REQUEST = True
+
+# 3. Garante que o Django use HTTPS para os cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
