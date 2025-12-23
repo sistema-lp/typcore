@@ -45,9 +45,8 @@ TENANT_APPS = [
 ]
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
-
-TENANT_MODEL = "customers.Client"
-TENANT_DOMAIN_MODEL = "customers.Domain"  # <--- ADICIONE O PREFIXO 'TENANT_'
+TENANT_MODEL = "apps.customers.Client"
+TENANT_DOMAIN_MODEL = "apps.customers.Domain"
 
 # 5. MIDDLEWARE
 MIDDLEWARE = [

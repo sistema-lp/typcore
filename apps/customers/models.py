@@ -13,8 +13,7 @@ class BusinessSector(models.Model):
 class Client(TenantMixin):
     name = models.CharField(max_length=100)
     # Conecta ao ramo de atividade
-    sector = models.ForeignKey(BusinessSector, on_delete=models.SET_NULL, null=True, blank=True)
-    
+    business_sector = models.ForeignKey(BusinessSector, on_delete=models.SET_NULL, null=True, blank=True)       
     # Dados de contato
     email = models.EmailField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
