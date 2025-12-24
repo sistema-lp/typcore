@@ -1,6 +1,6 @@
-from django.apps import AppConfig  # <--- ADICIONE AQUI TAMBÉM
+from django.apps import AppConfig
 
 class ProductsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'products'
+    name = 'products'  # <--- REMOVA O "apps." DAQUI
     label = 'products'

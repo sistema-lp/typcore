@@ -4,12 +4,14 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
+# 1. DIRETÓRIOS E PATHS
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
-# Garante que o Django encontre a pasta 'apps'
+# Isso permite que o Django enxergue 'products' e 'customers' diretamente
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
+# 2. SEGURANÇA BÁSICA
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-typcore-key')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
@@ -21,11 +23,11 @@ ALLOWED_HOSTS = [
     '.railway.app', 
 ]
 
-# 4. DEFINIÇÃO DE APPS (Django-Tenants exige ordem específica)
+# 3. DEFINIÇÃO DE APPS (Removido o prefixo 'apps.' pois sys.path já aponta para a pasta)
 SHARED_APPS = [
     'jazzmin',
     'django_tenants',
-    'apps.customers',    
+    'customers',     # Corrigido: Django-Tenants usa o nome do app, não o caminho da pasta
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,34 +39,18 @@ SHARED_APPS = [
 TENANT_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'apps.products',     
+    'products',      # Corrigido: Acesso direto pelo nome do app
 ]
 
+# Une as listas garantindo que não haja duplicidade
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
+# 4. CONFIGURAÇÃO MULTI-TENANT
 TENANT_MODEL = "customers.Client"
 TENANT_DOMAIN_MODEL = "customers.Domain"
 
-# --- AJUSTE DE COOKIES (CRUCIAL PARA O LOGIN) ---
-# Deixamos como None para que o navegador aceite o cookie no domínio exato que você está usando
-SESSION_COOKIE_DOMAIN = None 
-# 1. Força o Django a aceitar o login vindo deste endereço
-CSRF_TRUSTED_ORIGINS = [
-    'https://erp.typcore.com.br',
-    'https://typcore.com.br',
-    'https://*.railway.app'
-]
-
-# 2. Configurações de Cookie para Multi-tenant (O Pulo do Gato)
-SESSION_COOKIE_DOMAIN = None  # Mantenha como None para não travar em um único domínio
-CSRF_COOKIE_DOMAIN = None
-SESSION_SAVE_EVERY_REQUEST = True
-
-# 3. Garante que o Django use HTTPS para os cookies
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 MIDDLEWARE = [
-    'django_tenants.middleware.main.TenantMainMiddleware',
+    'django_tenants.middleware.main.TenantMainMiddleware', # Sempre o primeiro
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -78,6 +64,20 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'typcore.urls'
 PUBLIC_SCHEMA_URLCONF = 'typcore.urls'
 
+# 5. BANCO DE DADOS
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600
+    )
+}
+DATABASES['default']['ENGINE'] = 'django_tenants.postgresql_backend'
+
+DATABASE_ROUTERS = (
+    'django_tenants.routers.TenantSyncRouter',
+)
+
+# 6. TEMPLATES
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -94,48 +94,31 @@ TEMPLATES = [
     },
 ]
 
-# 6. BANCO DE DADOS
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600
-    )
-}
-DATABASES['default']['ENGINE'] = 'django_tenants.postgresql_backend'
-
-DATABASE_ROUTERS = (
-    'django_tenants.routers.TenantSyncRouter',
-)
-
-# 7. ARQUIVOS ESTÁTICOS
+# 7. ESTÁTICOS
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# 8. INTERNACIONALIZAÇÃO
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 9. SEGURANÇA (Ajustado para Railway)
+# 9. SEGURANÇA DE COOKIES E HTTPS (Fundamental para o Brasil/Cloudflare)
 CSRF_TRUSTED_ORIGINS = [
     'https://*.up.railway.app',
     'https://erp.typcore.com.br',
-    'https://typcore.com.br'
+    'https://*.typcore.com.br', # Permite todos os subdomínios dos clientes
 ]
 
-# Permite que usuários do schema public loguem em domínios de tenants
 TENANT_USERS_DOMAIN_ALLOW_ALL = True 
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # Deixe a linha abaixo como None ou com o seu domínio exato
     SESSION_COOKIE_DOMAIN = None
+    CSRF_COOKIE_DOMAIN = None
