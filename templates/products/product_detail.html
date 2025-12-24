@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ object.name }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        .back-link { display: block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>{{ object.name }}</h1>
+    <p><strong>Descrição:</strong> {{ object.description|default:"Não informada." }}</p>
+    <p><strong>Preço:</strong> R$ {{ object.price }}</p>
+    
+    <hr>
+    <a class="back-link" href="{% url 'products:list' %}">← Voltar para a lista</a>
+</body>
+</html>

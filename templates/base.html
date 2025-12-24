@@ -2,17 +2,44 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>TypCore ERP - {% block title %}{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script> </head>
-<body class="bg-gray-100">
-    <nav class="bg-blue-600 p-4 text-white shadow-lg">
-        <div class="container mx-auto flex justify-between">
-            <h1 class="font-bold text-xl">TypCore System</h1>
-            <span>Bem-vindo!</span>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP TYPCORE{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; }
+        .navbar { background-color: #2c3e50; }
+        .navbar-brand, .nav-link { color: white !important; }
+        .main-content { margin-top: 30px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        footer { margin-top: 50px; text-align: center; color: #7f8c8d; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">TYPCORE ERP</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/products/">Produtos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/customers/list/">Clientes</a></li>
+                </ul>
+                <span class="navbar-text text-white">
+                    Painel Administrativo
+                </span>
+            </div>
         </div>
     </nav>
-    <main class="container mx-auto mt-10 p-5 bg-white rounded-lg shadow">
-        {% block content %}{% endblock %}
-    </main>
+
+    <div class="container main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Typcore - Sistema de Gestão Multi-tenant</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

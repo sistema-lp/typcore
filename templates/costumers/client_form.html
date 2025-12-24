@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Cliente | TYPCORE{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4 shadow-sm">
+            <h2 class="mb-4">Cadastrar Novo Ambiente</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label font-weight-bold">Nome da Empresa</label>
+                    <input type="text" name="name" class="form-control" placeholder="Ex: Mecânica Automotiva" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Identificador (Schema)</label>
+                    <input type="text" name="schema_name" class="form-control" placeholder="ex: mecanica_joao" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Subdomínio</label>
+                    <div class="input-group">
+                        <input type="text" name="domain" class="form-control" placeholder="mecanica" required>
+                        <span class="input-group-text">.erp.typcore.com.br</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Criar Instância Agora</button>
+                    <a href="{% url 'customers:list' %}" class="btn btn-light border">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

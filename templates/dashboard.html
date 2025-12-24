@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | TYPCORE{% endblock %}
+
+{% block content %}
+<div class="row text-center">
+    <div class="col-md-12 mb-4">
+        <h1>Bem-vindo ao ERP Typcore</h1>
+        <p class="lead">Gestão simplificada para múltiplos negócios.</p>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm">
+            <h3>Produtos</h3>
+            <h2 class="display-4">{{ total_products }}</h2>
+            <a href="{% url 'products:list' %}" class="btn btn-primary">Gerenciar Catálogo</a>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm">
+            <h3>Clientes (Tenants)</h3>
+            <h2 class="display-4">{{ total_clients }}</h2>
+            <a href="{% url 'customers:list' %}" class="btn btn-secondary">Ver Clientes Ativos</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
