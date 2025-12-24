@@ -35,7 +35,7 @@ SHARED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'products', # Deixe aqui para resolver o erro de "relation does not exist"
+    'products',
 ]
 
 # 2. Depois defina a TENANT_APPS
@@ -43,7 +43,8 @@ TENANT_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'products',
-]
+    ]
+    
 
 # 3. POR ÚLTIMO você faz a soma (Linha 43 que deu erro)
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]# 4. CONFIGURAÇÃO MULTI-TENANT
