@@ -6,4 +6,5 @@ urlpatterns = [
     # O "apps." antes do nome garante que o Django encontre a pasta correta
     path('products/', include('apps.products.urls')),
     path('customers/', include('apps.customers.urls')),
+    
 ]
