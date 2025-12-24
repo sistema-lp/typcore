@@ -14,3 +14,10 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'typcore.settings')
 
 application = get_wsgi_application()
+
+# No final do seu typcore/urls.py ou wsgi.py
+from django.core.management import call_command
+try:
+    call_command('migrate_schemas', interactive=False)
+except:
+    pass

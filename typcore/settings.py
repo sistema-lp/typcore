@@ -24,22 +24,19 @@ ALLOWED_HOSTS = [
 ]
 
 # 3. DEFINIÇÃO DE APPS (Removido o prefixo 'apps.' pois sys.path já aponta para a pasta)
-SHARED_APPS = [
+SSHARED_APPS = [
     'jazzmin',
     'django_tenants',
-    'customers',     # Corrigido: Django-Tenants usa o nome do app, não o caminho da pasta
+    'customers',     
     'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    # ... outros ...
+    'products',      # <--- COLOCA ELE AQUI TAMBÉM
 ]
 
 TENANT_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'products',      # Corrigido: Acesso direto pelo nome do app
+    'products',      
 ]
 
 # Une as listas garantindo que não haja duplicidade
