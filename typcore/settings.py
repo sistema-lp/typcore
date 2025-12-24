@@ -24,25 +24,29 @@ ALLOWED_HOSTS = [
 ]
 
 # 3. DEFINIÇÃO DE APPS (Removido o prefixo 'apps.' pois sys.path já aponta para a pasta)
-SSHARED_APPS = [
+# 1. Primeiro defina a SHARED_APPS
+SHARED_APPS = [
     'jazzmin',
     'django_tenants',
-    'customers',     
+    'customers',
     'django.contrib.admin',
-    # ... outros ...
-    'products',      # <--- COLOCA ELE AQUI TAMBÉM
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'products', # Deixe aqui para resolver o erro de "relation does not exist"
 ]
 
+# 2. Depois defina a TENANT_APPS
 TENANT_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'products',      
+    'products',
 ]
 
-# Une as listas garantindo que não haja duplicidade
-INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
-
-# 4. CONFIGURAÇÃO MULTI-TENANT
+# 3. POR ÚLTIMO você faz a soma (Linha 43 que deu erro)
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]# 4. CONFIGURAÇÃO MULTI-TENANT
 TENANT_MODEL = "customers.Client"
 TENANT_DOMAIN_MODEL = "customers.Domain"
 
