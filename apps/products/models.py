@@ -7,7 +7,8 @@ class Product(models.Model):
 
     class Meta:
         app_label = 'products'
-        db_table = 'products_product'
+        # Garante que o Django use este nome exato no Postgres
+        db_table = 'products_product' 
 
     def __str__(self):
         return self.name
