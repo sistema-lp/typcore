@@ -35,13 +35,14 @@ SHARED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.customers', # Caminho completo
-    'apps.products',  # Caminho completo
+    
 ]
 
 # 2. Depois defina a TENANT_APPS
 TENANT_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'apps.products',  # Caminho completo
     
     ]
     
