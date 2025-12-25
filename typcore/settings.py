@@ -28,14 +28,14 @@ ALLOWED_HOSTS = [
 SHARED_APPS = [
     'jazzmin',
     'django_tenants',
-    'customers',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'products',
+    'apps.customers', # Caminho completo
+    'apps.products',  # Caminho completo
 ]
 
 # 2. Depois defina a TENANT_APPS

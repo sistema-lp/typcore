@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 from .models import Client # Ou o nome do seu modelo de Tenant
-from products.models import Product
+from apps.products.models import Product
+
 
 class ClientListView(ListView):
     model = Client

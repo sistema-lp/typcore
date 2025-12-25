@@ -6,7 +6,8 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name="Descrição")
 
     class Meta:
-        db_table = 'products_product' # Forçamos o nome para evitar conflitos antigos
+        app_label = 'products'
+        db_table = 'products_product'
 
     def __str__(self):
         return self.name

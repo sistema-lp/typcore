@@ -33,3 +33,25 @@ class Client(TenantMixin):
 # 3. Modelo de Domínio (Apenas UMA vez)
 class Domain(DomainMixin):
     pass
+
+
+class BusinessSector(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        app_label = 'customers' # Adicione isso
+        verbose_name = "Setor de Negócio"
+
+    def __str__(self):
+        return self.name
+
+class Client(TenantMixin):
+    name = models.CharField(max_length=100)
+    # ... seus outros campos ...
+
+    class Meta:
+        app_label = 'customers' # Adicione isso
+
+class Domain(DomainMixin):
+    class Meta:
+        app_label = 'customers' # Adicione isso

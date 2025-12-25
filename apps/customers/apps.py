@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+
 class CustomersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'customers'  # <--- REMOVA O "apps." DAQUI
+    name = 'apps.customers'  # Caminho completo
+    label = 'customers'      # Apelido para o Django usar internamente
