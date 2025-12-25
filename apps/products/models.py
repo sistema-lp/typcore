@@ -7,7 +7,7 @@ class Product(models.Model):
 
     class Meta:
         app_label = 'products'
-        db_table = 'products_product' # <--- ISSO resolve o ProgrammingError
+        db_table = 'products_product'
 
     def __str__(self):
         return self.name
