@@ -7,7 +7,7 @@ class Product(models.Model):
 
     class Meta:
         app_label = 'products'
-        db_table = 'products_product'
+        db_table = 'products_inventory' # <--- Mude para este nome
 
     def __str__(self):
         return self.name
