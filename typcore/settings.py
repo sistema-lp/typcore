@@ -3,6 +3,9 @@ import sys
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 
 # 1. DIRETÓRIOS E PATHS
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -130,14 +133,11 @@ if not DEBUG:
     CSRF_COOKIE_DOMAIN = None
 
     # No final do settings.py
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
+
 
 @receiver(post_migrate)
-def create_default_tenant(sender, **kwargs):
-    if sender.name == 'apps.customers':
-        from apps.customers.models import Client, Domain
-        if not Client.objects.filter(schema_name='public').exists():
-            # Cria o tenant sem exigir campos extras que estão dando erro
-            tenant = Client.objects.create(schema_name='public', name='Typcore ERP')
-            Domain.objects.create(domain='erp.typcore.com.br', tenant=tenant, is_primary=True)
+def create_admin_user(sender, **kwargs):
+    User = get_user_model()
+    if not User.objects.filter(username='admin').exists():
+        # Cria o usuário admin com a senha 'admin123'
+        User.objects.create_superuser('admin', 'admin@email.com', 'rido1206')
