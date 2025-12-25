@@ -26,15 +26,18 @@ ALLOWED_HOSTS = [
 # 3. DEFINIÇÃO DE APPS (Removido o prefixo 'apps.' pois sys.path já aponta para a pasta)
 # 1. Primeiro defina a SHARED_APPS
 SHARED_APPS = [
-    'jazzmin',
+    'apps.customers', # Caminho completo
+    'apps.products',  # Caminho completo
     'django_tenants',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.customers', # Caminho completo
+    
+    
     
 ]
 
@@ -42,7 +45,7 @@ SHARED_APPS = [
 TENANT_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'apps.products',  # Caminho completo
+    
     
     ]
     
