@@ -9,6 +9,7 @@ class BusinessSector(models.Model):
     class Meta:
         app_label = 'customers'
         verbose_name = "Setor de Negócio"
+        verbose_name_plural = "Setores de Negócio"
 
     def __str__(self):
         return self.name
