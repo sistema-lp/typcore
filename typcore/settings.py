@@ -128,3 +128,16 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_DOMAIN = None
     CSRF_COOKIE_DOMAIN = None
+
+    # No final do settings.py
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+
+@receiver(post_migrate)
+def create_default_tenant(sender, **kwargs):
+    if sender.name == 'apps.customers':
+        from apps.customers.models import Client, Domain
+        if not Client.objects.filter(schema_name='public').exists():
+            # Cria o tenant sem exigir campos extras que estão dando erro
+            tenant = Client.objects.create(schema_name='public', name='Typcore ERP')
+            Domain.objects.create(domain='erp.typcore.com.br', tenant=tenant, is_primary=True)
